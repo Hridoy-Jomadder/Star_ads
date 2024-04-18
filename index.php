@@ -34,10 +34,10 @@
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border position-relative text-primary" style="width: 6rem; height: 6rem;" role="status"></div>
         <i class="fa fa-laptop-code fa-2x text-primary position-absolute top-50 start-50 translate-middle"></i>
-    </div>
+    </div> -->
     <!-- Spinner End -->
 
 
@@ -212,28 +212,28 @@
                     <div class="fact-item bg-light rounded text-center h-100 p-5">
                         <i class="fa fa-certificate fa-4x text-primary mb-4"></i>
                         <h5 class="mb-3">Years Experience</h5>
-                        <h1 class="display-5 mb-0" data-toggle="counter-up">1234</h1>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">5</h1>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="fact-item bg-light rounded text-center h-100 p-5">
                         <i class="fa fa-users-cog fa-4x text-primary mb-4"></i>
                         <h5 class="mb-3">Team Members</h5>
-                        <h1 class="display-5 mb-0" data-toggle="counter-up">1234</h1>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">12</h1>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="fact-item bg-light rounded text-center h-100 p-5">
                         <i class="fa fa-users fa-4x text-primary mb-4"></i>
                         <h5 class="mb-3">Satisfied Clients</h5>
-                        <h1 class="display-5 mb-0" data-toggle="counter-up">1234</h1>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">520</h1>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
                     <div class="fact-item bg-light rounded text-center h-100 p-5">
                         <i class="fa fa-check fa-4x text-primary mb-4"></i>
                         <h5 class="mb-3">Projects Done</h5>
-                        <h1 class="display-5 mb-0" data-toggle="counter-up">1234</h1>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">1250</h1>
                     </div>
                 </div>
             </div>
@@ -264,7 +264,7 @@
                                 <small>SEO & Founder</small>
                             </div>
                         </div>
-                        <a class="btn btn-primary rounded-pill py-3 px-5" href="">Read More</a>
+                        <a class="btn btn-primary rounded-pill py-3 px-5" href="star_ads.php">Read More</a>
                     </div>
                 </div>
             </div>
@@ -487,8 +487,8 @@
                         <img class="img-fluid border rounded-circle w-75 p-2 mb-4" src="img/team-1.jpg" alt="">
                         <div class="team-text">
                             <div class="team-title">
-                                <h5>Full Name</h5>
-                                <span>Designation</span>
+                                <h5>Hridoy Jomadder</h5>
+                                <span>Designation: Web Dev</span>
                             </div>
                             <div class="team-social">
                                 <a class="btn btn-square btn-primary rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
