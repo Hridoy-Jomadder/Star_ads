@@ -40,7 +40,7 @@
         <div class="row gx-0 align-items-center d-none d-lg-flex">
             <div class="col-lg-6 px-5 text-start">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a class="small text-secondary" href="#">Home</a></li>
+                    
                     <li class="breadcrumb-item"><a class="small text-secondary" href="#">Career</a></li>
                     <li class="breadcrumb-item"><a class="small text-secondary" href="#">Terms</a></li>
                     <li class="breadcrumb-item"><a class="small text-secondary" href="#">Privacy</a></li>
@@ -150,17 +150,29 @@
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="h-100">
                         <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
-                        <h1 class="display-6 mb-4">#1 Digital Solution With <span class="text-primary">10 Years</span> Of Experience</h1>
-                        <p>Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
-                        <p class="mb-4">Stet no et lorem dolor et diam, amet duo ut dolore vero eos. No stet est diam rebum amet diam ipsum. Clita clita labore, dolor duo nonumy clita sit at, sed sit sanctus dolor eos.</p>
-                        <p class="mb-4">Stet no et lorem dolor et diam, amet duo ut dolore vero eos. No stet est diam rebum amet diam ipsum. Clita clita labore, dolor duo nonumy clita sit at, sed sit sanctus dolor eos.</p>
-                        <div class="d-flex align-items-center mb-4 pb-2">
+                        <h1 class="display-6 mb-4">#1 Digital Solution With <span class="text-primary">5 Years</span> Of Experience</h1>
+                        <p>Introducing Star Social Media - Your Ultimate Solution for Social Media Advertising
+
+                        In today's digital age, having a strong presence on social media is essential for any business looking to reach a wider audience and increase brand awareness. With millions of users actively engaging on platforms like Star, Facebook, Instagram, Twitter, and LinkedIn, the potential for businesses to connect with their target audience is limitless.
+
+                        At Star Social Media, we understand the importance of social media advertising and the impact it can have on your business. That's why we have created a platform that makes it easy for businesses of all sizes to create and manage their social media advertising campaigns.
+                        </p>
+                        <p class="mb-4">Our user-friendly interface allows you to easily create eye-catching ads that will capture the attention of your target audience. 
+                            
+                        <!-- With customizable templates and design tools, you can create ads that reflect your brand's unique identity and messaging. -->
+
+                        But we don't stop there. Our platform also provides detailed analytics and reporting tools that allow you to track the performance of your ads in real-time. This valuable data will help you make informed decisions about your advertising strategy and optimize your campaigns for maximum impact.
+                        </p>
+                        <p class="mb-4">Whether you're looking to increase website traffic, generate leads, or drive sales, Star Social Media has the tools and expertise to help you achieve your goals. Our team of experienced professionals is dedicated to providing top-notch customer service and support, ensuring that your advertising campaigns run smoothly and effectively.
+
+                         So why wait? Join Star Social Media today and take your social media advertising to the next level. With our innovative platform and expert guidance, the sky's the limit for your business's success.</p>
+                        <!-- <div class="d-flex align-items-center mb-4 pb-2">
                             <img class="flex-shrink-0 rounded-circle" src="img/team-1.jpg" alt="" style="width: 50px; height: 50px;">
                             <div class="ps-4">
                                 <h6>Jhon Doe</h6>
                                 <small>SEO & Founder</small>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
