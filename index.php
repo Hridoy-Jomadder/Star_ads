@@ -1,3 +1,57 @@
+<?php
+session_start();
+// Include the necessary files
+include_once("classes/connect.php");
+include_once("classes/database.php");
+include_once("classes/login.php");
+
+// Instantiate Login class with database connection
+$login = new Login($conn);
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: login.php");
+    exit();
+}
+
+// Check if email and role are set in the session
+if (isset($_SESSION['email']) && isset($_SESSION['role'])) {
+    // Retrieve email and role from session
+    $email = $_SESSION['email'];
+    $role = $_SESSION['role'];
+
+    // Authenticate the user using the provided credentials
+    $user = $login->authenticate($email, $password, $role);
+
+    // Check if authentication was successful
+    if ($user) {
+        // Set the user information in the session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+
+        // Redirect to the index page
+        header("Location: index.php");
+        exit();
+    } else {
+        // Authentication failed, handle the error
+        $error_message = "Invalid email, password, or role.";
+    }
+} else {
+    // Email and role are not set in the session, handle the error
+    $error_message = "Email and role are required.";
+}
+
+// Display the error message or handle it as needed
+// echo $error_message;
+
+// After successful login
+if (isset($user)) { // Check if $user is set
+    $_SESSION['username'] = $user['username'];
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,16 +105,8 @@
                     <li class="breadcrumb-item"><a class="small text-secondary" href="#">Terms</a></li>
                     <li class="breadcrumb-item"><a class="small text-secondary" href="#">Privacy</a></li>
                 </ol>
-            </div>
-            <div class="col-lg-6 px-5 text-end">
-                <small>Follow us:</small>
-                <div class="h-100 d-inline-flex align-items-center">
-                    <a class="btn-square text-primary border-end rounded-0" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn-square text-primary border-end rounded-0" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn-square text-primary border-end rounded-0" href=""><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn-square text-primary pe-0" href=""><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
+            </div> 
+            <!-- social media -->
         </div>
     </div>
     <!-- Topbar End -->
@@ -88,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <!-- <div class="col-4">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="flex-shrink-0 btn-lg-square border rounded-circle">
                                 <i class="fa fa-phone text-primary"></i>
@@ -98,7 +144,7 @@
                                 <h6 class="mb-0">+012 345 6789</h6>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-4">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="flex-shrink-0 btn-lg-square border rounded-circle">
@@ -110,7 +156,35 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-4">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="flex-shrink-0 btn-lg-square border rounded-circle">
+                                <i class="far fa-user text-primary"></i>
+                            </div>
+                            <div class="ps-3">
+                                <p class="mb-2">
+                                <?php
+                                // Check if the user is logged in
+                                if (isset($_SESSION['user_id'])) {
+                                    // User is logged in, display the welcome message
+                                    var_dump($_SESSION);
+                                    if (isset($_SESSION['username'])) {
+                                        echo "Welcome, " . $_SESSION['username'] . "!";
+                                    } else {
+                                        // Handle the case where username is not set in the session
+                                        echo "Welcome!";
+                                    }
+                                } else {
+                                    // User is not logged in
+                                    echo "User not logged in.";
+                                }
+                                ?>
+                                </p>
+                                <h6 class="mb-0"><a href="logout.php">Logout</a></h6>
+                            </div>
+                        </div>
+                    </div>
+               </div>
             </div>
         </div>
     </div>
