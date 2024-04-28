@@ -1,3 +1,159 @@
+<?php
+session_start();
+// Include the necessary files
+include_once("classes/connect.php");
+include_once("classes/database.php");
+include_once("classes/login.php");
+
+// Instantiate Login class with database connection
+$login = new Login($conn);
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: login.php");
+    exit();
+}
+
+// Check if email and role are set in the session
+if (isset($_SESSION['email']) && isset($_SESSION['role'])) {
+    // Retrieve email and role from session
+    $email = $_SESSION['email'];
+    $role = $_SESSION['role'];
+
+    // Authenticate the user using the provided credentials
+    $user = $login->authenticate($email, $password, $role);
+
+    // Check if authentication was successful
+    if ($user) {
+        // Set the user information in the session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+
+        // Redirect to the index page
+        header("Location: index.php");
+        exit();
+    } else {
+        // Authentication failed, handle the error
+        $error_message = "Invalid email, password, or role.";
+    }
+} else {
+    // Email and role are not set in the session, handle the error
+    $error_message = "Email and role are required.";
+}
+
+// Function to get all services from the database
+function getServices() {
+    global $conn; // Assuming $conn is your database connection variable
+    $services = array(); // Initialize an empty array to store services
+
+    // Query to select all services from the database
+    $sql = "SELECT * FROM services";
+    $result = mysqli_query($conn, $sql);
+
+    // Check if query was successful
+    if ($result) {
+        // Loop through each row in the result set
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Add each service to the $services array
+            $services[] = $row;
+        }
+        // Free result set
+        mysqli_free_result($result);
+    } else {
+        // Query failed
+        echo "Error: " . mysqli_error($conn);
+    }
+
+    // Return the array of services
+    return $services;
+}
+
+// Get services from the database
+$services = getServices();
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $adTitle = $_POST['adTitle'];
+    $adDescription = $_POST['adDescription'];
+    $adURL = $_POST['adURL'];
+    $adBudget = $_POST['adBudget'];
+    $adDuration = $_POST['adDuration'];
+
+    // Validate the form data (you can add more validation as needed)
+    if (empty($adTitle) || empty($adDescription) || empty($adURL) || empty($adBudget) || empty($adDuration)) {
+        // Handle validation errors (e.g., display an error message)
+        echo "All fields are required.";
+    } else {
+        // Process the uploaded image
+        $targetDir = "uploads/"; // Directory where images will be uploaded
+        $targetFile = $targetDir . basename($_FILES["adImage"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($targetFile,PATHINFO_EXTENSION));
+
+        // Check if image file is a actual image or fake image
+        if(isset($_POST["submit"])) {
+            $check = getimagesize($_FILES["adImage"]["tmp_name"]);
+            if($check !== false) {
+                $uploadOk = 1;
+            } else {
+                echo "File is not an image.";
+                $uploadOk = 0;
+            }
+        }
+
+        // Check if file already exists
+        if (file_exists($targetFile)) {
+            echo "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+
+        // Check file size (limit to 5MB)
+        if ($_FILES["adImage"]["size"] > 5000000) {
+            echo "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+
+        // Allow only certain file formats (you can customize this list)
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif" ) {
+            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+            echo "Sorry, your file was not uploaded.";
+        } else {
+            // If everything is ok, try to upload file
+            if (move_uploaded_file($_FILES["adImage"]["tmp_name"], $targetFile)) {
+                // File uploaded successfully, now insert ad details into database
+                $imagePath = $targetFile;
+
+                // Insert ad details into the database (you need to modify this query based on your database structure)
+                $sql = "INSERT INTO ads (title, description, image, url, budget, duration) VALUES ('$adTitle', '$adDescription', '$imagePath', '$adURL', $adBudget, $adDuration)";
+                if ($conn->query($sql) === TRUE) {
+                    echo "Ad created successfully.";
+                } else {
+                    echo "Error: " . $sql . "<br>" . $conn->error;
+                }
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+            }
+        }
+    }
+} 
+// else {
+//     // If the form is not submitted, redirect to the ad creation page
+//     header("Location: service.php");
+//     exit();
+// }
+
+// Close database connection
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,10 +190,10 @@
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border position-relative text-primary" style="width: 6rem; height: 6rem;" role="status"></div>
         <i class="fa fa-laptop-code fa-2x text-primary position-absolute top-50 start-50 translate-middle"></i>
-    </div>
+    </div> -->
     <!-- Spinner End -->
 
 
@@ -88,7 +244,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <!-- <div class="col-4">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="flex-shrink-0 btn-lg-square border rounded-circle">
                                 <i class="fa fa-phone text-primary"></i>
@@ -98,7 +254,7 @@
                                 <h6 class="mb-0">+012 345 6789</h6>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-4">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="flex-shrink-0 btn-lg-square border rounded-circle">
@@ -107,6 +263,33 @@
                             <div class="ps-3">
                                 <p class="mb-2">Email Us</p>
                                 <h6 class="mb-0">info@example.com</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="flex-shrink-0 btn-lg-square border rounded-circle">
+                                <i class="far fa-user text-primary"></i>
+                            </div>
+                            <div class="ps-3">
+                                <p class="mb-2">
+                                <?php
+                                // Check if the user is logged in
+                                if (isset($_SESSION['user_id'])) {
+                                    // User is logged in, display the welcome message
+                                    if (isset($_SESSION['username'])) {
+                                        echo "Welcome, " . $_SESSION['username'] . "!";
+                                    } else {
+                                        // Handle the case where username is not set in the session
+                                        echo "Welcome!";
+                                    }
+                                } else {
+                                    // User is not logged in
+                                    echo "User not logged in.";
+                                }
+                                ?>
+                                </p>
+                                <h6 class="mb-0"><a href="logout.php">Logout</a></h6>
                             </div>
                         </div>
                     </div>
@@ -161,6 +344,47 @@
     </div>
     <!-- Page Header End -->
 
+    <!-- Service Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h6 class="section-title bg-white text-center text-primary px-3">Create Ad</h6>
+            <!-- Ad Creation Form -->
+            <form action="service.php" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="adTitle" class="form-label">Ad Title</label>
+                    <input type="text" class="form-control" id="adTitle" name="adTitle" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adDescription" class="form-label">Ad Description</label>
+                    <textarea class="form-control" id="adDescription" name="adDescription" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="adImage" class="form-label">Ad Image</label>
+                    <input type="file" class="form-control" id="adImage" name="adImage" accept="image/*" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adURL" class="form-label">Website URL</label>
+                    <input type="url" class="form-control" id="adURL" name="adURL" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adBudget" class="form-label">Ad Budget</label>
+                    <input type="number" class="form-control" id="adBudget" name="adBudget" min="0" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adDuration" class="form-label">Ad Duration (in days)</label>
+                    <input type="number" class="form-control" id="adDuration" name="adDuration" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Ad</button>
+            </form>
+            <!-- End of Ad Creation Form -->
+        </div>
+        <!-- Remaining code -->
+    </div>
+</div>
+<!-- Service End -->
+
+
 
     <!-- Service Start -->
     <div class="container-xxl py-5">
@@ -170,6 +394,45 @@
                 <h1 class="display-6 mb-4">We Focuse On Making The Best In All Sectors</h1>
             </div>
             <div class="row g-4">
+
+           <!-- Display services -->
+           
+           <!-- 1 Ads -->
+           <?php foreach ($services as $service) : ?>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <a class="service-item d-block rounded text-center h-100 p-4" href="<?php echo $service['link']; ?>">
+                            <img class="img-fluid rounded mb-4" src="<?php echo $service['image']; ?>" alt="">
+                            <h4 class="mb-0"><?php echo $service['title']; ?></h4>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+           
+                <!-- 2 Ads -->
+                <!-- Display services -->
+<?php foreach ($services as $service) : ?>
+    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+        <a class="service-item d-block rounded text-center h-100 p-4" href="<?php echo $service['link']; ?>">
+            <img class="img-fluid rounded mb-4" src="<?php echo $service['image']; ?>" alt="">
+            <h4 class="mb-0"><?php echo $service['title']; ?></h4>
+        </a>
+    </div>
+<?php endforeach; ?>
+
+                <!-- 3 Ads -->
+            <!-- Display services -->
+<?php foreach ($services as $service) : ?>
+    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+        <a class="service-item d-block rounded text-center h-100 p-4" href="<?php echo $service['link']; ?>">
+            <img class="img-fluid rounded mb-4" src="<?php echo $service['image']; ?>" alt="">
+            <h4 class="mb-0"><?php echo $service['title']; ?></h4>
+        </a>
+    </div>
+<?php endforeach; ?>
+
+
+
+            
+
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <a class="service-item d-block rounded text-center h-100 p-4" href="">
                         <img class="img-fluid rounded mb-4" src="img/service-1.jpg" alt="">
@@ -210,6 +473,8 @@
         </div>
     </div>
     <!-- Service End -->
+
+    
 
 
     <!-- Testimonial Start -->

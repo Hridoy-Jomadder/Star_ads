@@ -32,23 +32,23 @@ class Signup
         $stmt = $this->conn->prepare("INSERT INTO users (username, password, email, country, number, website, address, role) VALUES ('$username', '$password', '$email', '$country', '$number', '$website', '$address', '$role')");
 
 
-// Check if the statement preparation was successful
-if (!$stmt) {
-    return "Error preparing statement: " . $this->conn->error;
-}
+        // Check if the statement preparation was successful
+        if (!$stmt) {
+            return "Error preparing statement: " . $this->conn->error;
+        }
 
-// Bind parameters to the prepared statement
-if (!$stmt->bind_param("ssssssss", $username, $hashedPassword, $email, $country, $number, $website, $address, $role)) {
-    return "Error binding parameters: " . $stmt->error;
-}
+        // Bind parameters to the prepared statement
+        if (!$stmt->bind_param("ssssssss", $username, $hashedPassword, $email, $country, $number, $website, $address, $role)) {
+            return "Error binding parameters: " . $stmt->error;
+        }
 
-// Execute the query
-if ($stmt->execute()) {
-    // Registration successful
-    return "Registration successful!";
-} else {
-    // Registration failed
-    return "Error executing statement: " . $stmt->error;
-}
-    }
-}
+        // Execute the query
+        if ($stmt->execute()) {
+            // Registration successful
+            return "Registration successful!";
+        } else {
+            // Registration failed
+            return "Error executing statement: " . $stmt->error;
+        }
+            }
+        }

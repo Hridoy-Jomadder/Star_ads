@@ -40,6 +40,24 @@ class Login
             return false;
         }
     }
+
+    // public function authenticateByEmail($email) {
+    //     // Sanitize the email input to prevent SQL injection
+    //     $email = mysqli_real_escape_string($this->conn, $email);
+
+    //     // Query to fetch user based on email
+    //     $query = "SELECT * FROM users WHERE email = '$email'";
+    //     $result = mysqli_query($this->conn, $query);
+
+    //     // Check if a user with the provided email exists
+    //     if (mysqli_num_rows($result) > 0) {
+    //         // User found, return user details
+    //         return mysqli_fetch_assoc($result);
+    //     } else {
+    //         // User not found, return false
+    //         return false;
+    //     }
+    // }
 }
 
 // Instantiate the Login class with a database connection

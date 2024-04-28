@@ -1,3 +1,94 @@
+<?php
+session_start();
+// Include the necessary files
+include_once("classes/connect.php");
+include_once("classes/database.php");
+include_once("classes/database2.php");
+include_once("classes/login.php");
+
+// Instantiate Login class with database connection
+$login = new Login($conn);
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: login.php");
+    exit();
+}
+
+// Check if email and role are set in the session
+if (isset($_SESSION['email']) && isset($_SESSION['role'])) {
+    // Retrieve email and role from session
+    $email = $_SESSION['email'];
+    $role = $_SESSION['role'];
+
+    // Authenticate the user using the provided credentials
+    $user = $login->authenticate($email, $password, $role);
+
+    // Check if authentication was successful
+    if ($user) {
+        // Set the user information in the session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+
+        // Redirect to the index page
+        header("Location: index.php");
+        exit();
+    } else {
+        // Authentication failed, handle the error
+        $error_message = "Invalid email, password, or role.";
+    }
+} else {
+    // Email and role are not set in the session, handle the error
+    $error_message = "Email and role are required.";
+}
+
+// Function to get all ads from the database
+function getAds() {
+    global $conn; // Assuming $conn is your database connection variable
+    $ads = array(); // Initialize an empty array to store ads
+
+    // Query to select all ads from the database
+    $sql = "SELECT * FROM ads";
+    $result = mysqli_query($conn, $sql);
+
+    // Check if query was successful
+    if ($result) {
+        // Loop through each row in the result set
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Add each ad to the $ads array
+            $ads[] = $row;
+        }
+        // Free result set
+        mysqli_free_result($result);
+    } else {
+        // Query failed
+        echo "Error: " . mysqli_error($conn);
+    }
+
+    // Return the array of ads
+    return $ads;
+}
+
+// Get ads from the database
+$ads = getAds();
+
+// Check if the user is a Star Member (you need to define how to identify Star Members)
+// if ($_SESSION['role'] !== 'star_member') {
+//     // Redirect to a page indicating unauthorized access
+//     header("Location: unauthorized.php");
+//     exit();
+// }
+
+// Check if 'status' key exists in each ad array
+foreach ($ads as &$ad) {
+    // If 'status' key doesn't exist, set it to a default value or handle accordingly
+    if (!isset($ad['status'])) {
+        $ad['status'] = 'Unknown'; // Set a default status
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -91,17 +182,6 @@
                     <div class="col-4">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="flex-shrink-0 btn-lg-square border rounded-circle">
-                                <i class="fa fa-phone text-primary"></i>
-                            </div>
-                            <div class="ps-3">
-                                <p class="mb-2">Call Us</p>
-                                <h6 class="mb-0">+012 345 6789</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="d-flex align-items-center justify-content-end">
-                            <div class="flex-shrink-0 btn-lg-square border rounded-circle">
                                 <i class="far fa-envelope text-primary"></i>
                             </div>
                             <div class="ps-3">
@@ -161,8 +241,95 @@
     </div>
     <!-- Page Header End -->
 
+    <div class="container">
+    <h1>Ad Management Dashboard</h1>
+    <div class="ads">
+        <h2>Ads</h2>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Edit</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <?php foreach ($ads as $ad): ?>
+                <tr>
+                    <td><?php echo $ad['title']; ?></td>
+                    <td><?php echo $ad['description']; ?></td>
+                    <td>
+                        <form action="edit_ad.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <button type="submit">Edit</button>
+                        </form>
+                    </td>
+                    <td><?php echo $ad['status']; ?></td>
+                    <td>
+                        <form action="manage_ads.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <?php if ($ad['status'] == 'active'): ?>
+                                <button type="submit" name="action" value="pause">Pause</button>
+                            <?php else: ?>
+                                <button type="submit" name="action" value="resume">Resume</button>
+                            <?php endif; ?>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="manage_ads.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <button type="submit" name="action" value="delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+    <div class="performance">
+        <h2>Performance Metrics</h2>
+        <canvas id="adPerformanceChart" width="400" height="200"></canvas>
+    </div>
+</div>
 
-    <!-- Project Start -->
+
+<?php foreach ($ads as $ad): ?>
+    <tr>
+        <td><?php echo $ad['title']; ?></td>
+        <td><?php echo $ad['description']; ?></td>
+        <td>
+            <form action="edit_ad.php" method="post">
+                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                <button type="submit">Edit</button>
+            </form>
+        </td>
+        <td>
+            <?php if (isset($ad['status'])): ?>
+                <?php echo $ad['status']; ?>
+            <?php else: ?>
+                Status Not Available
+            <?php endif; ?>
+        </td>
+        <td>
+            <form action="manage_ads.php" method="post">
+                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                <?php if (isset($ad['status']) && $ad['status'] == 'active'): ?>
+                    <button type="submit" name="action" value="pause">Pause</button>
+                <?php else: ?>
+                    <button type="submit" name="action" value="resume">Resume</button>
+                <?php endif; ?>
+            </form>
+        </td>
+        <td>
+            <form action="manage_ads.php" method="post">
+                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                <button type="submit" name="action" value="delete">Delete</button>
+            </form>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
+
+
+    <!-- Ads Start -->
     <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
@@ -253,61 +420,8 @@
             </div>
         </div>
     </div>
-    <!-- Project End -->
+    <!-- Ads End -->
 
-
-    <!-- Testimonial Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
-                <h1 class="display-6 mb-4">What Our Clients Say!</h1>
-            </div>
-            <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
-                <div class="testimonial-item bg-light rounded p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <img class="flex-shrink-0 rounded-circle border p-1" src="img/testimonial-1.jpg" alt="">
-                        <div class="ms-4">
-                            <h5 class="mb-1">Client Name</h5>
-                            <span>Profession</span>
-                        </div>
-                    </div>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-light rounded p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <img class="flex-shrink-0 rounded-circle border p-1" src="img/testimonial-2.jpg" alt="">
-                        <div class="ms-4">
-                            <h5 class="mb-1">Client Name</h5>
-                            <span>Profession</span>
-                        </div>
-                    </div>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-light rounded p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <img class="flex-shrink-0 rounded-circle border p-1" src="img/testimonial-3.jpg" alt="">
-                        <div class="ms-4">
-                            <h5 class="mb-1">Client Name</h5>
-                            <span>Profession</span>
-                        </div>
-                    </div>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-light rounded p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <img class="flex-shrink-0 rounded-circle border p-1" src="img/testimonial-4.jpg" alt="">
-                        <div class="ms-4">
-                            <h5 class="mb-1">Client Name</h5>
-                            <span>Profession</span>
-                        </div>
-                    </div>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Testimonial End -->
 
 
     <!-- Footer Start -->
@@ -400,6 +514,49 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+<!-- add me -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    // Get data for the chart
+    var activeAdsCount = <?php echo $activeAdsCount; ?>;
+    var pausedAdsCount = <?php echo $pausedAdsCount; ?>;
+
+    // Create a new Chart instance
+    var ctx = document.getElementById('adPerformanceChart').getContext('2d');
+    var adPerformanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Active Ads', 'Paused Ads'],
+            datasets: [{
+                label: 'Ad Performance',
+                data: [activeAdsCount, pausedAdsCount],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.5)', // Blue color for active ads
+                    'rgba(255, 99, 132, 0.5)'  // Red color for paused ads
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+
+
 </body>
 
 </html>
