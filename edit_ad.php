@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 // Check if the user is a Star Member (assuming 'role' determines membership level)
 if ($_SESSION['role'] !== 'star_member') {
     // Redirect to home page or display an error message
-    header("Location: index.php");
+    header("Location: project.php");
     exit();
 }
 
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "UPDATE ads SET title = '$new_title', description = '$new_description' WHERE id = " . $ad['id'];
         if (mysqli_query($conn, $sql)) {
             // Redirect back to the ad management dashboard after successful update
-            header("Location: dashboard.php");
+            header("Location: project.php");
             exit();
         } else {
             // Error handling if update fails

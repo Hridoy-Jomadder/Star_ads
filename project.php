@@ -87,6 +87,7 @@ foreach ($ads as &$ad) {
         $ad['status'] = 'Unknown'; // Set a default status
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -243,35 +244,152 @@ foreach ($ads as &$ad) {
 
     <div class="container">
     <h1>Ad Management Dashboard</h1>
-    <div class="ads">
-        <h2>Ads</h2>
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Edit</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr class="text-dark">
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Budget</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col" colspan="2">Star Member Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($ads as $ad): ?>
+                    <tr>
+                        <td><?php echo $ad['title']; ?></td>
+                        <td><?php echo $ad['description']; ?></td>
+                        <td><img src="<?php echo $ad['image']; ?>" alt="Ad Image" style="max-width: 100px;"></td>
+                        <td><?php echo $ad['date']; ?></td>
+                        <td><?php echo $ad['budget']; ?></td>
+                        <td><?php echo $ad['duration']; ?></td>
+                        <td>
+                            <form action="edit_ad.php" method="post">
+                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                                <button type="submit">Edit</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="manage_ads.php" method="post" onsubmit="return confirm('Are you sure you want to delete this ad?');">
+                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                                <button type="submit" name="action" value="delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+    <div class="container">
+    <h1>Ad Management Dashboard</h1>
+    <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Budget</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col" colspan="2">Star Member Action</th>
+                        <th scope="col">personal or Company Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
             <?php foreach ($ads as $ad): ?>
                 <tr>
                     <td><?php echo $ad['title']; ?></td>
                     <td><?php echo $ad['description']; ?></td>
+                    
+                    </td>
+                    <td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    
+                    </td>
                     <td>
                         <form action="edit_ad.php" method="post">
                             <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
                             <button type="submit">Edit</button>
                         </form>
                     </td>
-                    <td><?php echo $ad['status']; ?></td>
                     <td>
                         <form action="manage_ads.php" method="post">
                             <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                            <?php if ($ad['status'] == 'active'): ?>
-                                <button type="submit" name="action" value="pause">Pause</button>
-                            <?php else: ?>
-                                <button type="submit" name="action" value="resume">Resume</button>
-                            <?php endif; ?>
+                            <button type="submit" name="action" value="delete">Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                    <form action="manage_ads.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <button type="submit" name="action" value="delete">Confirm</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>   
+
+ <div class="container">
+    <h1>Personal or Company Management Dashboard</h1>
+    <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Click</th>
+                        <th scope="col">View Website</th>
+                        <th scope="col">Sell</th>
+                        <th scope="col">Budget</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col" colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+            <?php foreach ($ads as $ad): ?>
+                <tr>
+                    <td><?php echo $ad['title']; ?></td>
+                    <td><?php echo $ad['description']; ?></td>
+                    
+                    <td><?php echo $ad['status']; ?></td>
+                    
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <form action="edit_ad.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <button type="submit">Edit</button>
                         </form>
                     </td>
                     <td>
@@ -291,43 +409,143 @@ foreach ($ads as &$ad) {
 </div>
 
 
-<?php foreach ($ads as $ad): ?>
-    <tr>
-        <td><?php echo $ad['title']; ?></td>
-        <td><?php echo $ad['description']; ?></td>
-        <td>
-            <form action="edit_ad.php" method="post">
-                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                <button type="submit">Edit</button>
-            </form>
-        </td>
-        <td>
-            <?php if (isset($ad['status'])): ?>
-                <?php echo $ad['status']; ?>
-            <?php else: ?>
-                Status Not Available
-            <?php endif; ?>
-        </td>
-        <td>
-            <form action="manage_ads.php" method="post">
-                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                <?php if (isset($ad['status']) && $ad['status'] == 'active'): ?>
-                    <button type="submit" name="action" value="pause">Pause</button>
-                <?php else: ?>
-                    <button type="submit" name="action" value="resume">Resume</button>
-                <?php endif; ?>
-            </form>
-        </td>
-        <td>
-            <form action="manage_ads.php" method="post">
-                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                <button type="submit" name="action" value="delete">Delete</button>
-            </form>
-        </td>
-    </tr>
-<?php endforeach; ?>
+<div class="container">
+    <h1>Personal or Company Management Dashboard</h1>
+    <div class="filters mb-3">
+        <label for="status">Status:</label>
+        <select id="status">
+            <option value="">All</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="expired">Expired</option>
+        </select>
+        <label for="dateRange">Date Range:</label>
+        <input type="date" id="startDate">
+        <input type="date" id="endDate">
+        <button id="filterBtn">Filter</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr class="text-dark">
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Click</th>
+                    <th scope="col">View Website</th>
+                    <th scope="col">Sell</th>
+                    <th scope="col">Budget</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col" colspan="2">Action</th>
+                </tr>
+            </thead>
+            <tbody id="adList">
+                <!-- Ad list will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <div class="performance">
+        <h2>Performance Metrics</h2>
+        <canvas id="adPerformanceChart" width="400" height="200"></canvas>
+    </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample ad data (replace with actual data fetched from backend)
+    const ads = [
+        { title: "Ad 1", description: "Description for Ad 1", status: "active", date: "2024-04-29", clicks: 100, budget: 500 },
+        { title: "Ad 2", description: "Description for Ad 2", status: "paused", date: "2024-04-28", clicks: 50, budget: 300 },
+        // Add more ad data here...
+    ];
 
+    // Function to render ads based on filter criteria
+    function renderAds() {
+        const statusFilter = document.getElementById('status').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        // Filter ads based on status
+        let filteredAds = ads;
+        if (statusFilter) {
+            filteredAds = filteredAds.filter(ad => ad.status === statusFilter);
+        }
+
+        // Filter ads based on date range
+        if (startDate && endDate) {
+            filteredAds = filteredAds.filter(ad => ad.date >= startDate && ad.date <= endDate);
+        }
+
+        // Render filtered ads
+        const adList = document.getElementById('adList');
+        adList.innerHTML = '';
+        filteredAds.forEach(ad => {
+            const row = `
+                <tr>
+                    <td>${ad.title}</td>
+                    <td>${ad.description}</td>
+                    <td>${ad.status}</td>
+                    <td>Image</td>
+                    <td>${ad.date}</td>
+                    <td>${ad.clicks}</td>
+                    <td>View Website</td>
+                    <td>Sell</td>
+                    <td>${ad.budget}</td>
+                    <td>Duration</td>
+                    <td>
+                        <form action="edit_ad.php" method="post">
+                            <input type="hidden" name="ad_id" value="${ad.id}">
+                            <button type="submit">Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="manage_ads.php" method="post">
+                            <input type="hidden" name="ad_id" value="${ad.id}">
+                            <button type="submit" name="action" value="delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            `;
+            adList.innerHTML += row;
+        });
+    }
+
+    // Function to render ad performance chart
+    function renderPerformanceChart() {
+        const adPerformanceChart = document.getElementById('adPerformanceChart');
+        new Chart(adPerformanceChart, {
+            type: 'bar',
+            data: {
+                labels: ['Ad 1', 'Ad 2'], // Add ad titles dynamically
+                datasets: [{
+                    label: 'Clicks',
+                    data: [100, 50], // Add clicks data dynamically
+                    backgroundColor: ['#36a2eb', '#ff6384'], // Customize colors
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Initial rendering
+    renderAds();
+    renderPerformanceChart();
+
+    // Event listener for filter button click
+    document.getElementById('filterBtn').addEventListener('click', () => {
+        renderAds();
+    });
+</script>
 
     <!-- Ads Start -->
     <div class="container-xxl py-5">
