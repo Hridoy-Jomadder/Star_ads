@@ -254,7 +254,8 @@ foreach ($ads as &$ad) {
                     <th scope="col">Date</th>
                     <th scope="col">Budget</th>
                     <th scope="col">Duration</th>
-                    <th scope="col" colspan="2">Star Member Action</th>
+                    <th scope="col" colspan="2">Star Member<br> Action</th>
+                    <th scope="col">Personal or<br> Company Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -278,6 +279,12 @@ foreach ($ads as &$ad) {
                                 <button type="submit" name="action" value="delete">Delete</button>
                             </form>
                         </td>
+                        <td>
+                        <form action="manage_ads.php" method="post">
+                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                            <button type="submit" name="action" value="delete">Confirm</button>
+                        </form>
+                    </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -285,62 +292,75 @@ foreach ($ads as &$ad) {
     </div>
 </div>
 
-
+<br>
     <div class="container">
-    <h1>Ad Management Dashboard</h1>
+    <h1>Add to Ads</h1>
     <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
                     <tr class="text-dark">
+                        <th scope="col">ID</th>
                         <th scope="col">Title</th>
                         <th scope="col">Description</th>
                         <th scope="col">Image</th>
                         <th scope="col">Date</th>
                         <th scope="col">Budget</th>
                         <th scope="col">Duration</th>
-                        <th scope="col" colspan="2">Star Member Action</th>
-                        <th scope="col">personal or Company Action</th>
                     </tr>
                 </thead>
                 <tbody>
 
             <?php foreach ($ads as $ad): ?>
                 <tr>
+                    <td><?php echo $ad['id']; ?></td>
                     <td><?php echo $ad['title']; ?></td>
                     <td><?php echo $ad['description']; ?></td>
-                    
-                    </td>
-                    <td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    
-                    </td>
-                    <td>
-                        <form action="edit_ad.php" method="post">
-                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                            <button type="submit">Edit</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form action="manage_ads.php" method="post">
-                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                            <button type="submit" name="action" value="delete">Delete</button>
-                        </form>
-                    </td>
-                    <td>
-                    <form action="manage_ads.php" method="post">
-                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                            <button type="submit" name="action" value="delete">Confirm</button>
-                        </form>
-                    </td>
+                    <td><img src="<?php echo $ad['image']; ?>" alt="Ad Image" style="max-width: 100px;"></td>
+                        <td><?php echo $ad['date']; ?></td>
+                        <td><?php echo $ad['budget']; ?></td>
+                        <td><?php echo $ad['duration']; ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
     </div>
-</div>   
+</div>
+
+<div class="container">
+    <h1>Bill</h1>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr class="text-dark">
+                    <th scope="col">ID</th>
+                    <th scope="col">Budget</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($ads as $ad): ?>
+                    <tr>
+                        <td><?php echo $ad['id']; ?></td>
+                        <td><?php echo $ad['budget']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+            <!-- Total Row -->
+            <tfoot>
+                <tr class="text-dark">
+                    <th scope="row" colspan="1">Total</th>
+                    <td>
+                        <?php
+                        $totalBudget = 0;
+                        foreach ($ads as $ad) {
+                            $totalBudget += $ad['budget'];
+                        }
+                        echo $totalBudget;
+                        ?>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
 
  <div class="container">
     <h1>Personal or Company Management Dashboard</h1>
@@ -402,10 +422,10 @@ foreach ($ads as &$ad) {
             <?php endforeach; ?>
         </table>
     </div>
-    <div class="performance">
+    <!-- <div class="performance">
         <h2>Performance Metrics</h2>
         <canvas id="adPerformanceChart" width="400" height="200"></canvas>
-    </div>
+    </div> -->
 </div>
 
 
@@ -446,10 +466,10 @@ foreach ($ads as &$ad) {
             </tbody>
         </table>
     </div>
-    <div class="performance">
+    <!-- <div class="performance">
         <h2>Performance Metrics</h2>
         <canvas id="adPerformanceChart" width="400" height="200"></canvas>
-    </div>
+    </div> -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

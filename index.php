@@ -213,6 +213,7 @@ if (isset($user)) { // Check if $user is set
                     </div>
                 </div>
                 <a href="contact.php" class="nav-item nav-link">Contact Us</a>
+                <a href="dashboard.php" style="text-align:right;">Dashboard</a>
             </div>
             
         </div>
